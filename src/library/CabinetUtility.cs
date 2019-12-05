@@ -31,7 +31,7 @@ namespace Microsoft.UpdateServices.Compression
             {
                 File.WriteAllBytes(cabTempFile, compressedData);
 
-                var startInfo = new ProcessStartInfo("expand.exe", $"{cabTempFile} {xmlTempFile}");
+                var startInfo = new ProcessStartInfo("cabextract", $"--filter {xmlTempFile} {cabTempFile}");
                 startInfo.UseShellExecute = false;
                 startInfo.CreateNoWindow = true;
                 var expandProcess = Process.Start(startInfo);
@@ -73,7 +73,8 @@ namespace Microsoft.UpdateServices.Compression
 
             try
             {
-                var startInfo = new ProcessStartInfo("makecab.exe", string.Format("/f {0}", directiveFile));
+                var startInfo = new ProcessStartInfo("lcab", "-r");
+                //var startInfo = new ProcessStartInfo("makecab.exe", string.Format("/f {0}", directiveFile));
                 var expandProcess = Process.Start(startInfo);
                 expandProcess.WaitForExit();
 

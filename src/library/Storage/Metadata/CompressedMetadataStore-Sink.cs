@@ -88,8 +88,10 @@ namespace Microsoft.UpdateServices.Storage
                             throw new Exception("Missing XmlUpdateBlobCompressed");
                         }
 
+                        Console.WriteLine("calling extract.exe...");
                         // Note: This only works on Windows.
                         updateXml = CabinetUtility.DecompressData(overTheWireUpdate.XmlUpdateBlobCompressed);
+                        Console.WriteLine("updateXml = {0}", updateXml);
                     }
 
                     var xdoc = XDocument.Parse(updateXml, LoadOptions.None);
