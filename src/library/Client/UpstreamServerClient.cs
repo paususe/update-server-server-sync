@@ -396,7 +396,7 @@ namespace Microsoft.UpdateServices.Client
                         updateDataReply = null;
                     }
                     retryCount++;
-                } while (updateDataReply == null && retryCount < 10);
+                } while (updateDataReply == null && retryCount < 100);
 
                 if (updateDataReply == null || updateDataReply.GetUpdateDataResponse1 == null || updateDataReply.GetUpdateDataResponse1.GetUpdateDataResult == null)
                 {
@@ -409,8 +409,12 @@ namespace Microsoft.UpdateServices.Client
                 // First add the files information to the store; it will be used to link update files with urls later
                 filesList.ForEach(file => destination.AddFile(file));
 
+                Console.WriteLine("Before destination.AddUpdates");
+                
                 // Add the updates to the result, converting them to a higher level representation
                 destination.AddUpdates(updateDataReply.GetUpdateDataResponse1.GetUpdateDataResult.updates);
+
+                Console.WriteLine("After destination.AddUpdates");
 
                 lock (destination)
                 {

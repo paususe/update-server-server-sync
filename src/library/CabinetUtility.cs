@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Microsoft.UpdateServices.Compression
 {
@@ -25,17 +26,33 @@ namespace Microsoft.UpdateServices.Compression
             var cabTempFile = Path.GetTempFileName();
             var xmlTempFile = Path.GetTempFileName();
 
+            Console.WriteLine($"cabTempFile = {cabTempFile}");
+            Console.WriteLine($"xmlTempFile = {xmlTempFile}");
+            File.Copy(cabTempFile, $"{cabTempFile}PAU");
+
             string decompressedString;
 
             try
             {
                 File.WriteAllBytes(cabTempFile, compressedData);
 
-                var startInfo = new ProcessStartInfo("cabextract", $"--filter {xmlTempFile} {cabTempFile}");
+                var startInfo = new ProcessStartInfo("cabextract", $"{cabTempFile}");
+                //var startInfo = new ProcessStartInfo("cabextract -p", $"{cabTempFile}");
                 startInfo.UseShellExecute = false;
                 startInfo.CreateNoWindow = true;
+                startInfo.RedirectStandardOutput = true;
                 var expandProcess = Process.Start(startInfo);
                 expandProcess.WaitForExit();
+                //decompressedString = expandProcess.StandardOutput.ReadToEnd();
+
+                ///var startInfo = new ProcessStartInfo("iconv", $"-f UTF-8 -t UTF-8 blob");
+                ///startInfo.UseShellExecute = false;
+                ///startInfo.CreateNoWindow = true;
+                ///var expandProcess = Process.Start(startInfo);
+                ///expandProcess.WaitForExit();
+
+                // Non-Windows
+                File.Move("blob", xmlTempFile);
 
                 decompressedString = File.ReadAllText(xmlTempFile, System.Text.Encoding.Unicode);
             }

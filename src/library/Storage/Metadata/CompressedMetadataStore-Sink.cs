@@ -91,12 +91,16 @@ namespace Microsoft.UpdateServices.Storage
                         Console.WriteLine("calling extract.exe...");
                         // Note: This only works on Windows.
                         updateXml = CabinetUtility.DecompressData(overTheWireUpdate.XmlUpdateBlobCompressed);
-                        Console.WriteLine("updateXml = {0}", updateXml);
+                        //Console.WriteLine("updateXml = {0}", updateXml);
                     }
 
+                    Console.WriteLine("Going to parse updateXml");
                     var xdoc = XDocument.Parse(updateXml, LoadOptions.None);
+                    Console.WriteLine("Going to create newUpdate from updateIdentity and xdoc");
                     var newUpdate = Update.FromUpdateXml(updateIdentity, xdoc);
+                    Console.WriteLine("Going to AddUpdate");
                     AddUpdate(newUpdate, updateXml, out var newUpdateIndex, xdoc);
+                    Console.WriteLine("After AddUpdate");
                 }
             }
         }
