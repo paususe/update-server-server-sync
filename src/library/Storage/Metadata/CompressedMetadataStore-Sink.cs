@@ -83,7 +83,7 @@ namespace Microsoft.UpdateServices.Storage
                     //Console.WriteLine("Got overTheWireUpdate XML blob - updateXml = {0}", updateXml);
                     if (string.IsNullOrEmpty(updateXml))
                     {
-                        Console.WriteLine("Uh oh, updateXml was null or empty, trying to update it by calling extract...");
+                        //Console.WriteLine("Uh oh, updateXml was null or empty, trying to update it by calling extract...");
                         // If the plain text blob is not availabe, use the compressed XML blob
                         if (overTheWireUpdate.XmlUpdateBlobCompressed == null || overTheWireUpdate.XmlUpdateBlobCompressed.Length == 0)
                         {

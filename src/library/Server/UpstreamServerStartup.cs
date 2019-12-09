@@ -99,7 +99,7 @@ namespace Microsoft.UpdateServices.Server
                 services.TryAddSingleton<ContentController>(new ContentController(LocalMetadataSource, LocalContentSource, Filter));
 
                 // Add ContentController from this assembly
-                services.AddMvc().AddApplicationPart(Assembly.GetExecutingAssembly()).AddControllersAsServices();
+                services.AddMvc(option => option.EnableEndpointRouting = false).AddApplicationPart(Assembly.GetExecutingAssembly()).AddControllersAsServices();
             }
         }
 
