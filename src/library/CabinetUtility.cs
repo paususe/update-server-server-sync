@@ -26,9 +26,11 @@ namespace Microsoft.UpdateServices.Compression
             // run expand on it then read the resulting file back in memory
             var cabTempFile = Path.GetTempFileName();
             var xmlTempFile = Path.GetTempFileName();
+            var xmlTempDir = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(xmlTempFile));
 
             Console.WriteLine($"cabTempFile = {cabTempFile}");
             Console.WriteLine($"xmlTempFile = {xmlTempFile}");
+            Console.WriteLine($"xmlTempDir = {xmlTempDir}");
 
             string decompressedString;
 
@@ -41,7 +43,8 @@ namespace Microsoft.UpdateServices.Compression
                 if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
                     startInfo = new ProcessStartInfo("expand.exe", $"{cabTempFile} {xmlTempFile}");
                 } else {
-                    startInfo = new ProcessStartInfo("/usr/bin/cabextract", $"--quiet {cabTempFile}");
+                    Directory.CreateDirectory(xmlTempDir);
+                    startInfo = new ProcessStartInfo("/usr/bin/cabextract", $"-q {cabTempFile} -d {xmlTempDir}");
                 }
 
                 //var startInfo = new ProcessStartInfo("cabextract -p", $"{cabTempFile}");
@@ -60,7 +63,8 @@ namespace Microsoft.UpdateServices.Compression
 
                 if(!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
                     File.Delete(xmlTempFile);
-                    File.Move("blob", xmlTempFile);
+                    File.Move(Path.Combine(xmlTempDir, "blob"), xmlTempFile);
+                    Directory.Delete(xmlTempDir);
                 }
 
                 File.Copy(xmlTempFile, $"{cabTempFile}.XMLPAU");
