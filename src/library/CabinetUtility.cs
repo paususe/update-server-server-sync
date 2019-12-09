@@ -26,18 +26,17 @@ namespace Microsoft.UpdateServices.Compression
             // run expand on it then read the resulting file back in memory
             var cabTempFile = Path.GetTempFileName();
             var xmlTempFile = Path.GetTempFileName();
-            var xmlTempDir = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(xmlTempFile));
+            string xmlTempDir = null;
 
-            Console.WriteLine($"cabTempFile = {cabTempFile}");
-            Console.WriteLine($"xmlTempFile = {xmlTempFile}");
-            Console.WriteLine($"xmlTempDir = {xmlTempDir}");
+            if(!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+                xmlTempDir = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(xmlTempFile));
+            }
 
             string decompressedString;
 
             try
             {
                 File.WriteAllBytes(cabTempFile, compressedData);
-                File.Copy(cabTempFile, $"{cabTempFile}.CABPAU");
 
                 ProcessStartInfo startInfo;
                 if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
@@ -55,36 +54,32 @@ namespace Microsoft.UpdateServices.Compression
                 expandProcess.WaitForExit();
                 //decompressedString = expandProcess.StandardOutput.ReadToEnd();
 
-                ///var startInfo = new ProcessStartInfo("iconv", $"-f UTF-8 -t UTF-8 blob");
-                ///startInfo.UseShellExecute = false;
-                ///startInfo.CreateNoWindow = true;
-                ///var expandProcess = Process.Start(startInfo);
-                ///expandProcess.WaitForExit();
-
                 if(!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
                     File.Delete(xmlTempFile);
                     File.Move(Path.Combine(xmlTempDir, "blob"), xmlTempFile);
-                    Directory.Delete(xmlTempDir);
                 }
-
-                File.Copy(xmlTempFile, $"{cabTempFile}.XMLPAU");
 
                 decompressedString = File.ReadAllText(xmlTempFile, System.Text.Encoding.Unicode);
             }
-            catch(Exception e)
+            catch(Exception)
             {
-                Console.WriteLine($"Exception happened! {e.Message}");
                 decompressedString = null;
             }
 
             if (File.Exists(cabTempFile))
             {
-                //File.Delete(cabTempFile);
+                File.Delete(cabTempFile);
             }
 
             if (File.Exists(xmlTempFile))
             {
-                //File.Delete(xmlTempFile);
+                File.Delete(xmlTempFile);
+            }
+
+            if(!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+                if(Directory.Exists(xmlTempDir)) {
+                    Directory.Delete(xmlTempDir);
+                }
             }
 
             return decompressedString;
