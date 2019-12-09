@@ -62,7 +62,11 @@ namespace Microsoft.UpdateServices.Tools.UpdateRepo
                     break;
 
                 case OperationType.ExportUpdateXmlBlobProgress:
-                    Console.CursorLeft = 0;
+                    try {
+                        Console.CursorLeft = 0;
+                    } catch(Exception aoore) {
+                        //
+                    }
                     Console.Write("Exporting {0} update(s) and categories XML data: {1:000.00}%", e.Maximum, e.PercentDone);
                     break;
 

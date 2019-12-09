@@ -216,13 +216,21 @@ namespace Microsoft.UpdateServices.Tools.UpdateRepo
                     break;
 
                 case MetadataQueryStage.GetUpdateMetadataEnd:
-                    Console.CursorLeft = 0;
+                    try {
+                        Console.CursorLeft = 0;
+                    } catch(Exception aoore) {
+                        //
+                    }
                     Console.Write("Retrieving updates metadata [{0}]: 100.00%", e.Maximum);
                     ConsoleOutput.WriteGreen(" Done!");
                     break;
 
                 case MetadataQueryStage.GetUpdateMetadataProgress:
-                    Console.CursorLeft = 0;
+                    try {
+                        Console.CursorLeft = 0;
+                    } catch(Exception aoore) {
+                        //
+                    }
                     Console.Write("Retrieving updates metadata [{0}]: {1:000.00}%", e.Maximum, e.PercentDone);
                     break;
             }

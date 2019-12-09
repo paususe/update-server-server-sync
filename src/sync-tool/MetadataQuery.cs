@@ -406,9 +406,18 @@ namespace Microsoft.UpdateServices.Tools.UpdateRepo
             {
                 foreach(var parentBundleID in update.BundleParent)
                 {
-                    Console.CursorLeft = indentSize * recursionIndex + indentSize;
+                    try {
+                        Console.CursorLeft = indentSize * recursionIndex + indentSize;
+                    } catch(Exception aoore) {
+                        //
+                    }
                     Console.WriteLine("Bundled in     : {0}", parentBundleID);
-                    Console.CursorLeft = indentSize * recursionIndex + indentSize;
+
+                    try {
+                        Console.CursorLeft = indentSize * recursionIndex + indentSize;
+                    } catch(Exception aoore) {
+                        //
+                    }
                     Console.WriteLine("               : {0}", source.GetUpdateTitle(parentBundleID));
 
                     PrintBundleChainRecursive(source, source.GetUpdate(parentBundleID), recursionIndex + 1);

@@ -80,7 +80,7 @@ namespace Microsoft.UpdateServices.Storage
                 {
                     // We need to parse the XML update blob
                     string updateXml = overTheWireUpdate.XmlUpdateBlob;
-                    Console.WriteLine("Got overTheWireUpdate XML blob - updateXml = {0}", updateXml);
+                    //Console.WriteLine("Got overTheWireUpdate XML blob - updateXml = {0}", updateXml);
                     if (string.IsNullOrEmpty(updateXml))
                     {
                         Console.WriteLine("Uh oh, updateXml was null or empty, trying to update it by calling extract...");
@@ -93,10 +93,10 @@ namespace Microsoft.UpdateServices.Storage
                         //Console.WriteLine("calling extract.exe...");
                         // Note: This only works on Windows.
                         updateXml = CabinetUtility.DecompressData(overTheWireUpdate.XmlUpdateBlobCompressed);
-                        Console.WriteLine("updateXml = {0}", updateXml);
+                        //Console.WriteLine("Extract'ed updateXml = {0}", updateXml);
                     }
 
-                    Console.WriteLine("Going to parse updateXml");
+                    //Console.WriteLine("Going to parse updateXml");
                     var xdoc = XDocument.Parse(updateXml, LoadOptions.None);
                     //Console.WriteLine("Going to create newUpdate from updateIdentity and xdoc");
                     var newUpdate = Update.FromUpdateXml(updateIdentity, xdoc);

@@ -6,6 +6,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Text;
+using System.Runtime.InteropServices;
 
 namespace Microsoft.UpdateServices.Compression
 {
@@ -28,15 +29,21 @@ namespace Microsoft.UpdateServices.Compression
 
             Console.WriteLine($"cabTempFile = {cabTempFile}");
             Console.WriteLine($"xmlTempFile = {xmlTempFile}");
-            File.Copy(cabTempFile, $"{cabTempFile}PAU");
 
             string decompressedString;
 
             try
             {
                 File.WriteAllBytes(cabTempFile, compressedData);
+                File.Copy(cabTempFile, $"{cabTempFile}.CABPAU");
 
-                var startInfo = new ProcessStartInfo("cabextract", $"{cabTempFile}");
+                ProcessStartInfo startInfo;
+                if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+                    startInfo = new ProcessStartInfo("expand.exe", $"{cabTempFile} {xmlTempFile}");
+                } else {
+                    startInfo = new ProcessStartInfo("/usr/bin/cabextract", $"--quiet {cabTempFile}");
+                }
+
                 //var startInfo = new ProcessStartInfo("cabextract -p", $"{cabTempFile}");
                 startInfo.UseShellExecute = false;
                 startInfo.CreateNoWindow = true;
@@ -51,24 +58,29 @@ namespace Microsoft.UpdateServices.Compression
                 ///var expandProcess = Process.Start(startInfo);
                 ///expandProcess.WaitForExit();
 
-                // Non-Windows
-                File.Move("blob", xmlTempFile);
+                if(!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+                    File.Delete(xmlTempFile);
+                    File.Move("blob", xmlTempFile);
+                }
+
+                File.Copy(xmlTempFile, $"{cabTempFile}.XMLPAU");
 
                 decompressedString = File.ReadAllText(xmlTempFile, System.Text.Encoding.Unicode);
             }
-            catch(Exception)
+            catch(Exception e)
             {
+                Console.WriteLine($"Exception happened! {e.Message}");
                 decompressedString = null;
             }
 
             if (File.Exists(cabTempFile))
             {
-                File.Delete(cabTempFile);
+                //File.Delete(cabTempFile);
             }
 
             if (File.Exists(xmlTempFile))
             {
-                File.Delete(xmlTempFile);
+                //File.Delete(xmlTempFile);
             }
 
             return decompressedString;
@@ -88,10 +100,16 @@ namespace Microsoft.UpdateServices.Compression
             // Create the directive file
             File.WriteAllText(directiveFile, CreateMakeCabDirective(filePaths, outFile));
 
+            Console.WriteLine("Trying to CompressFiles");
             try
             {
-                var startInfo = new ProcessStartInfo("lcab", "-r");
-                //var startInfo = new ProcessStartInfo("makecab.exe", string.Format("/f {0}", directiveFile));
+                ProcessStartInfo startInfo;
+                if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+                    startInfo = new ProcessStartInfo("makecab.exe", string.Format("/f {0}", directiveFile));
+                } else {
+                    startInfo = new ProcessStartInfo("lcab", "-r");
+                }
+                
                 var expandProcess = Process.Start(startInfo);
                 expandProcess.WaitForExit();
 
@@ -107,7 +125,7 @@ namespace Microsoft.UpdateServices.Compression
             {
                 if (File.Exists(directiveFile))
                 {
-                    File.Delete(directiveFile);
+                    //File.Delete(directiveFile);
                 }
             }
         }

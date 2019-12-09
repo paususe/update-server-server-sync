@@ -101,7 +101,11 @@ namespace Microsoft.UpdateServices.Tools.UpdateRepo
                 case OperationType.IndexingTitlesStart:
                 case OperationType.IndexingPrerequisitesStart:
                 case OperationType.IndexingDriversStart:
-                    Console.CursorLeft = 0;
+                    try {
+                        Console.CursorLeft = 0;
+                    } catch(Exception aoore) {
+                        //
+                    }
                     Console.Write($"{operationMessage} [000.0%]");
                     break;
 
@@ -114,14 +118,22 @@ namespace Microsoft.UpdateServices.Tools.UpdateRepo
                 case OperationType.IndexingTitlesEnd:
                 case OperationType.IndexingPrerequisitesEnd:
                 case OperationType.IndexingDriversEnd:
-                    Console.CursorLeft = 0;
+                    try {
+                        Console.CursorLeft = 0;
+                    } catch(Exception aoore) {
+                        //
+                    }
                     Console.Write($"{operationMessage}  [100.00%] ");
                     ConsoleOutput.WriteGreen(" Done!");
                     break;
 
                 case OperationType.IndexingCategoriesProgress:
                 case OperationType.PrerequisiteGraphUpdateProgress:
-                    Console.CursorLeft = 0;
+                    try {
+                        Console.CursorLeft = 0;
+                    } catch(Exception aooree) {
+                        //
+                    }
                     Console.Write("{1} [{0:000.00}%]", e.PercentDone, operationMessage);
                     break;
             }

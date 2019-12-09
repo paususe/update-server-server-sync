@@ -409,12 +409,12 @@ namespace Microsoft.UpdateServices.Client
                 // First add the files information to the store; it will be used to link update files with urls later
                 filesList.ForEach(file => destination.AddFile(file));
 
-                Console.WriteLine("Before destination.AddUpdates");
+                //Console.WriteLine("Before destination.AddUpdates");
                 
                 // Add the updates to the result, converting them to a higher level representation
                 destination.AddUpdates(updateDataReply.GetUpdateDataResponse1.GetUpdateDataResult.updates);
 
-                Console.WriteLine("After destination.AddUpdates");
+                //Console.WriteLine("After destination.AddUpdates");
 
                 lock (destination)
                 {

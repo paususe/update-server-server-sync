@@ -76,24 +76,40 @@ namespace Microsoft.UpdateServices.Tools.UpdateRepo
                     break;
 
                 case OperationType.DownloadFileEnd:
-                    Console.CursorLeft = 0;
+                    try {
+                        Console.CursorLeft = 0;
+                    } catch(Exception aoore) {
+                        //
+                    }
                     Console.Write("Downloading {0,60} [100.00%] ", (e as ContentOperationProgress).File.FileName);
                     ConsoleOutput.WriteGreen("Done!");
                     break;
 
                 case OperationType.HashFileEnd:
-                    Console.CursorLeft = 0;
+                    try {
+                        Console.CursorLeft = 0;
+                    } catch(Exception aoore) {
+                        //
+                    }
                     Console.Write("Hashing     {0,60} [100.00%] ", (e as ContentOperationProgress).File.FileName);
                     ConsoleOutput.WriteGreen("Done!");
                     break;
 
                 case OperationType.DownloadFileProgress:
-                    Console.CursorLeft = 0;
+                    try {
+                        Console.CursorLeft = 0;
+                    } catch(Exception aoore) {
+                        //
+                    }
                     Console.Write("Downloading {0,60} [{1:000.00}%]", (e as ContentOperationProgress).File.FileName, e.PercentDone);
                     break;
 
                 case OperationType.HashFileProgress:
-                    Console.CursorLeft = 0;
+                    try {
+                        Console.CursorLeft = 0;
+                    } catch(Exception aoore) {
+                        //
+                    }
                     Console.Write("Hashing     {0,60} [{1:000.00}%]", (e as ContentOperationProgress).File.FileName, e.PercentDone);
                     break;
             }
