@@ -15,7 +15,7 @@
     <tags>Windows Update WSUS WU MS-WSUSSS</tags>
     <repository type="GIT" url="https://github.com/microsoft/update-server-server-sync" />
     <dependencies>
-      <group targetFramework=".NETCoreApp3.0">
+      <group targetFramework=".NETCoreApp3.1">
         <dependency id="Microsoft.AspNetCore" version="2.2.0" exclude="Build,Analyzers" />
         <dependency id="Microsoft.AspNetCore.Mvc" version="2.2.0" exclude="Build,Analyzers" />
         <dependency id="Newtonsoft.Json" version="12.0.2" exclude="Build,Analyzers" />
@@ -29,7 +29,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\src\library\bin\Release\netcoreapp3.0\server-server-sync-lib.dll" target="lib\netcoreapp3.0\server-server-sync-lib.dll" />
+    <file src="..\src\library\bin\Release\netcoreapp3.1\server-server-sync-lib.dll" target="lib\netcoreapp3.1\server-server-sync-lib.dll" />
     <file src="readme.txt" target="\readme.txt" />
   </files>
 </package>

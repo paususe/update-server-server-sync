@@ -267,7 +267,7 @@
       "System.Xml.XPath.XDocument, {Microsoft.NETCore.App, 2.1.0}",
       "WindowsBase, {Microsoft.NETCore.App, 2.1.0}"
     ],
-    "targetFramework": "netcoreapp3.0",
+    "targetFramework": "netcoreapp3.1",
     "typeReuseMode": "All"
   }
 }
