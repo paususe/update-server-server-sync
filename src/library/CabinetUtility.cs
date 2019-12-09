@@ -93,21 +93,28 @@ namespace Microsoft.UpdateServices.Compression
         /// <returns>True on success, false otherwise</returns>
         public static bool CompressFiles(List<string> filePaths, string outFile)
         {
+            bool exitCode;
+
+            if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+                exitCode = CompressFilesMakecab(filePaths, outFile);
+            } else {
+                exitCode = CompressFilesLcab(filePaths, outFile);
+            }
+
+            return exitCode;
+        }
+
+        public static bool CompressFilesMakecab(List<string> filePaths, string outFile) {
             // When dealing with multiple files, we must use a directive file
             var directiveFile = outFile + ".directive";
 
             // Create the directive file
             File.WriteAllText(directiveFile, CreateMakeCabDirective(filePaths, outFile));
 
-            Console.WriteLine("Trying to CompressFiles");
+            //Console.WriteLine("Trying to CompressFiles");
             try
             {
-                ProcessStartInfo startInfo;
-                if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-                    startInfo = new ProcessStartInfo("makecab.exe", string.Format("/f {0}", directiveFile));
-                } else {
-                    startInfo = new ProcessStartInfo("lcab", "-r");
-                }
+                ProcessStartInfo startInfo = new ProcessStartInfo("makecab.exe", string.Format("/f {0}", directiveFile));
                 
                 var expandProcess = Process.Start(startInfo);
                 expandProcess.WaitForExit();
@@ -124,8 +131,26 @@ namespace Microsoft.UpdateServices.Compression
             {
                 if (File.Exists(directiveFile))
                 {
-                    //File.Delete(directiveFile);
+                    File.Delete(directiveFile);
                 }
+            }
+        }
+
+        public static bool CompressFilesLcab(List<string> filePaths, string outFile) {
+            try
+            {
+                ProcessStartInfo startInfo = new ProcessStartInfo("lcab", string.Format("{0} {1}", String.Join(" ", filePaths), outFile));
+                
+                var expandProcess = Process.Start(startInfo);
+                expandProcess.WaitForExit();
+
+                var exitCode = expandProcess.ExitCode;
+
+                return exitCode == 0;
+            }
+            catch (Exception)
+            {
+                return false;
             }
         }
 
