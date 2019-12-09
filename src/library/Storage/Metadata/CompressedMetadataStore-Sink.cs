@@ -80,27 +80,29 @@ namespace Microsoft.UpdateServices.Storage
                 {
                     // We need to parse the XML update blob
                     string updateXml = overTheWireUpdate.XmlUpdateBlob;
+                    Console.WriteLine("Got overTheWireUpdate XML blob - updateXml = {0}", updateXml);
                     if (string.IsNullOrEmpty(updateXml))
                     {
+                        Console.WriteLine("Uh oh, updateXml was null or empty, trying to update it by calling extract...");
                         // If the plain text blob is not availabe, use the compressed XML blob
                         if (overTheWireUpdate.XmlUpdateBlobCompressed == null || overTheWireUpdate.XmlUpdateBlobCompressed.Length == 0)
                         {
                             throw new Exception("Missing XmlUpdateBlobCompressed");
                         }
 
-                        Console.WriteLine("calling extract.exe...");
+                        //Console.WriteLine("calling extract.exe...");
                         // Note: This only works on Windows.
                         updateXml = CabinetUtility.DecompressData(overTheWireUpdate.XmlUpdateBlobCompressed);
-                        //Console.WriteLine("updateXml = {0}", updateXml);
+                        Console.WriteLine("updateXml = {0}", updateXml);
                     }
 
                     Console.WriteLine("Going to parse updateXml");
                     var xdoc = XDocument.Parse(updateXml, LoadOptions.None);
-                    Console.WriteLine("Going to create newUpdate from updateIdentity and xdoc");
+                    //Console.WriteLine("Going to create newUpdate from updateIdentity and xdoc");
                     var newUpdate = Update.FromUpdateXml(updateIdentity, xdoc);
-                    Console.WriteLine("Going to AddUpdate");
+                    //Console.WriteLine("Going to AddUpdate");
                     AddUpdate(newUpdate, updateXml, out var newUpdateIndex, xdoc);
-                    Console.WriteLine("After AddUpdate");
+                    //Console.WriteLine("After AddUpdate");
                 }
             }
         }
